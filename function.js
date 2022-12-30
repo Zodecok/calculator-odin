@@ -11,7 +11,22 @@ function operate(a, b, operator) {
             break;
 
         case "divide":
+            if (b == 0) {
+                displayText("You dirty mungrel, never divide by zero");
+                class Mungrel {
+                    id;
+                    type;
+                    constructor() {
+                        this.id = "clear";
+                        this.type = "mungrel";
+                    }
+                }
+                let mungrel = new Mungrel();
+                // setTimeout(manipulatorEquator(mungrel), 4000);
+                manipulatorEquator(mungrel);
+            } else {
             return a / b;
+            }
             break;
 
         case "multiply":
@@ -27,13 +42,22 @@ function operate(a, b, operator) {
 // function buttonAdder(e) {
 //     e.target.
 // }
+function displayText(text) {
+    let display = document.querySelector("#display");
+    display.textContent = text;
+}
+
 function numberEquator(target) {
     if (!pastFirstValue) {
+        if (equalsPressed) {
+            lastValue = Number(target.id);
+            equalsPressed = false;
+        }
         lastValue = (lastValue * 10) + +target.id;
-        display.textContent = lastValue;
+        displayText(lastValue);
     } else {
         currentValue = (currentValue * 10) + +target.id;
-        display.textContent = currentValue;
+        displayText(currentValue);
     }
 }
 function operatorEquator(target) {
@@ -42,7 +66,7 @@ function operatorEquator(target) {
         pastOperation = target.id;
     } else {
         let operationAnswer = operate(lastValue, currentValue, pastOperation);
-        display.textContent = operationAnswer;
+        displayText(operationAnswer);
         pastOperation = target.id;
         lastValue = operationAnswer;
         currentValue = 0;
@@ -55,11 +79,24 @@ function manipulatorEquator(target) {
             break;
 
         case "equals":
-
-        
+            let operationAnswer = operate(lastValue, currentValue, pastOperation);
+            displayText(operationAnswer);
+            pastFirstValue = false;
+            lastValue = operationAnswer;
+            currentValue = 0;
+            equalsPressed = true;
             break;
 
         case "clear":
+            equalsPressed = false;
+            pastFirstValue = false;
+            lastValue = 0;
+            currentValue = 0;
+            pastOperation = NaN;
+            displayText("");
+            if (target.type == "mungrel") {
+                displayText("you just got mungrelled");
+            }
             break;
 
         case "negative":
