@@ -1,0 +1,41 @@
+.calculatorContainer {
+    width: 320px;
+    height: 450px;
+    margin: auto;
+    padding: 20px;
+    background: grey;
+    display: flex;
+    flex-direction: column;
+}
+
+.display {
+    flex: 1;
+    background: white;
+}
+
+button {
+    width: 80px;
+    height: 80px;
+}
+
+.manipulators {
+    display: flex;
+}
+
+.buttons {
+    display: flex;
+}
+
+#clear {
+   flex: 3;
+}
+
+.keypad {
+    display: flex;
+    flex-wrap: wrap;
+    width: 240px;
+}
+
+.operators {
+    width: 80px;
+}
