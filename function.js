@@ -12,20 +12,10 @@ function operate(a, b, operator) {
 
         case "divide":
             if (b == 0) {
+                clear();
                 displayText("You dirty mungrel, never divide by zero");
-                class Mungrel {
-                    id;
-                    type;
-                    constructor() {
-                        this.id = "clear";
-                        this.type = "mungrel";
-                    }
-                }
-                let mungrel = new Mungrel();
-                // setTimeout(manipulatorEquator(mungrel), 4000);
-                manipulatorEquator(mungrel);
             } else {
-            return a / b;
+                return a / b;
             }
             break;
 
@@ -44,6 +34,9 @@ function operate(a, b, operator) {
 // }
 function displayText(text) {
     let display = document.querySelector("#display");
+    if (Number(text) !== NaN) {
+        text = Math.round(Number(text) * 10000) / 10000;
+    }
     display.textContent = text;
 }
 
@@ -53,29 +46,79 @@ function numberEquator(target) {
             lastValue = Number(target.id);
             equalsPressed = false;
         }
-        lastValue = (lastValue * 10) + +target.id;
+        if (isDecimal) {
+            let lastValueString = String(lastValue);
+            if (lastValueString.includes(".")) {
+                lastValueString += target.id;
+            } else {
+                lastValueString += "." + target.id;
+            }
+            lastValue = Number(lastValueString);
+        } else {
+            lastValue = (lastValue * 10) + +target.id;
+        }
         displayText(lastValue);
+        lastButtonPressed = "number";
     } else {
-        currentValue = (currentValue * 10) + +target.id;
+        if (isDecimal) {
+            let currentValueString = String(currentValue);
+            if (currentValueString.includes(".")) {
+                currentValueString += target.id;
+            } else {
+                currentValueString += "." + target.id;
+            }
+            currentValue = Number(currentValueString);
+        } else {
+            currentValue = (currentValue * 10) + +target.id;
+        }
+        lastButtonPressed = "number";
         displayText(currentValue);
     }
 }
 function operatorEquator(target) {
     if (!pastFirstValue) {
         pastFirstValue = true;
+        lastButtonPressed= "operator";
         pastOperation = target.id;
+        isDecimal= false;
+    } else if (lastButtonPressed == "operator") {
+        clear();
+        displayText("You messed up man");
     } else {
         let operationAnswer = operate(lastValue, currentValue, pastOperation);
         displayText(operationAnswer);
         pastOperation = target.id;
         lastValue = operationAnswer;
+        lastButtonPressed = "operator";
         currentValue = 0;
+        isDecimal = false;
     }
 }
+
+function clear() {
+    equalsPressed = false;
+    pastFirstValue = false;
+    lastValue = 0;
+    currentValue = 0;
+    pastOperation = NaN;
+    isDecimal = false;
+    displayText("");
+}
+
 function manipulatorEquator(target) {
     switch (target.id) {
         case "decimal":
-            
+            if (lastButtonPressed == "number") {
+                isDecimal = true;
+                displayText(document.querySelector("#display").textContent + ".");
+
+            } else if (lastButtonPressed == "operator" || isDecimal) {
+                clear();
+                displayText("You tried to a do wrong");
+            } else {
+                clear();
+                displayText("This is your own error cooper");
+            }
             break;
 
         case "equals":
@@ -85,15 +128,11 @@ function manipulatorEquator(target) {
             lastValue = operationAnswer;
             currentValue = 0;
             equalsPressed = true;
+            isDecimal = false;
             break;
 
         case "clear":
-            equalsPressed = false;
-            pastFirstValue = false;
-            lastValue = 0;
-            currentValue = 0;
-            pastOperation = NaN;
-            displayText("");
+            clear();
             if (target.type == "mungrel") {
                 displayText("you just got mungrelled");
             }
@@ -105,13 +144,14 @@ function manipulatorEquator(target) {
     }
 }
 
+let isDecimal = false;
 let equalsPressed = false;
 let pastFirstValue = false;
 let lastValue = 0;
 let currentValue = 0;
 let pastOperation;
 let display = document.querySelector("#display");
-
+let lastButtonPressed;
 let numbers = document.querySelectorAll("button");
 
 numbers.forEach(button => button.addEventListener("click", function buttonAdder(e) {
